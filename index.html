@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+        <link rel="stylesheet" href="style.css" />
+        <script src="./fontawesome.js" crossorigin="anonymous"></script>
+    </head>
+    <body>
+        <form>
+            <div class="editor-container">
+                <div class="controllers">
+                    <button type="button" data-cmd="justifyLeft">
+                        <i class="fas fa-align-left" aria-hidden="true"></i>
+                    </button>
+
+                    <button type="button" data-cmd="justifyCenter">
+                        <i class="fas fa-align-center" aria-hidden="true"></i>
+                    </button>
+
+                    <button type="button" data-cmd="justifyRight">
+                        <i class="fas fa-align-right" aria-hidden="true"></i>
+                    </button>
+
+                    <button type="button" data-cmd="justifyFull">
+                        <i class="fas fa-align-justify" aria-hidden="true"></i>
+                    </button>
+
+                    <button type="button" data-cmd="bold">
+                        <i class="fas fa-bold" aria-hidden="true"></i>
+                    </button>
+
+                    <button type="button" data-cmd="italic">
+                        <i class="fas fa-italic" aria-hidden="true"></i>
+                    </button>
+
+                    <button type="button" data-cmd="underline">
+                        <i class="fas fa-underline" aria-hidden="true"></i>
+                    </button>
+
+                    <button type="button" data-cmd="insertOrderedList">
+                        <i class="fas fa-list-ol" aria-hidden="true"></i>
+                    </button>
+
+                    <button type="button" data-cmd="insertImage">
+                        <i class="fas fa-image"></i>
+                    </button>
+
+                    <button type="button" data-cmd="createLink">
+                        <i class="fas fa-link" aria-hidden="true"></i>
+                    </button>
+
+                    <button type="button" data-cmd="showCode">
+                        <i class="fas fa-code" aria-hidden="true"></i>
+                    </button>
+                </div>
+                <iframe
+                    class="editor-area"
+                    id="output"
+                    name="textField"
+                ></iframe>
+            </div>
+        </form>
+
+        <script>
+            const buttons = document.querySelectorAll(".controllers button");
+            textField.document.designMode = "on";
+
+            let show = false;
+
+            for (let i = 0; i < buttons.length; i++) {
+                buttons[i].addEventListener("click", function () {
+                    const command = this.getAttribute("data-cmd");
+                    if (buttons[i].name === "active") {
+                        buttons[i].classList.toggle("active");
+                    }
+
+                    if (command === "insertImage" || command === "createLink") {
+                        const url = prompt(
+                            "Enter the link here: ",
+                            "http:\/\/"
+                        );
+                        textField.document.execCommand(command, false, url);
+
+                        if (command === "insertImage") {
+                            const img =
+                                textField.document.querySelectorAll("img");
+                            img.forEach((item) => {
+                                item.style.maxWidth = "100%";
+                                item.style.height = "auto";
+                            });
+                        } else {
+                            const link =
+                                textField.document.querySelectorAll("a");
+                            link.forEach((item) => {
+                                item.addEventListener("mouseover", () => {
+                                    textField.document.designMode = "Off";
+                                });
+                                item.addEventListener("mouseout", () => {
+                                    textField.document.designMode = "On";
+                                });
+                                item.target = "_blank";
+                            });
+                        }
+                        return;
+                    }
+
+                    if (command === "showCode") {
+                        const textBody = textField.document.body;
+                        if (show) {
+                            textBody.innerHTML = textBody.textContent;
+                            show = false
+                        } else {
+                            textBody.textContent = textBody.innerHTML;
+                            show = true
+                        }
+                        return;
+                    }
+                    textField.document.execCommand(command, false, null);
+                });
+            }
+        </script>
+    </body>
+</html>
